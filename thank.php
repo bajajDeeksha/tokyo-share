@@ -25,7 +25,7 @@ function generateRandomString($length = 16) {
     return $randomString;
 }
 
-$unique_link = generateRandomString();
+$unique_link = generateRandomString().'?'.date('Y-m-d', strtotime($date));
 
 
 $query = "INSERT into events (`name`, email, phone, `date`, price, number_of_people, purpose, preference, akib_plan, `time`, coupon, comment, unique_link) 
@@ -122,7 +122,7 @@ $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
                     <button class="btn btn-lg btn-submit"> <a href="login.php"> ログアウト </a> </button>
                 </div>
                 <p> Created link - </p>
-                <a href="detail.php?<?php echo $unique_link; ?> ">detail.php?<?php echo $unique_link; ?> </p>
+                <a href="detail.php?<?php echo $unique_link; ?> ">detail.php?<?php echo $unique_link; ?> </a>
             </div>
         </div>
     </section>

@@ -1,4 +1,10 @@
-<?php session_start();?>
+<?php
+    session_start();
+    include 'config.php';
+    $unique_link = $_SESSION['unique_link'];
+    $query = "UPDATE events SET payment = 1 WHERE unique_link = '$unique_link'";
+    mysqli_query($db,$query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,6 +55,30 @@
                     <h2> <?php echo $_SESSION['name'];?> </h2>
                     <table class="table table-hover">
                         <tr>
+                            <th>名前 :</th>
+                            <td><?php echo $name ?></td>
+                        </tr>
+                        <tr>
+                            <th>ご利用日 :</th>
+                            <td><?php echo $date_time ?></td>
+                        </tr>
+                        <tr>
+                            <th>ご利用時間 :</th>
+                            <td><?php echo $time_slot?></td>
+                        </tr>
+                        <tr>
+                            <th>人数 :</th>
+                            <td><?php echo $number_of_people ?></td>
+                        </tr>
+                        <tr>
+                            <th>ご利用目的 :</th>
+                            <td><?php echo $purpose ?></td>
+                        </tr>
+                        <tr>
+                            <th>オプションプラン :</th>
+                            <td><?php echo $optional_plan ?></td>
+                        </tr>
+                        <tr>
                             <th>住所 :</th>
                             <td><?php echo $_SESSION['address'];?></td>
                         </tr>
@@ -57,8 +87,10 @@
                             <td><?php echo $_SESSION['off_add'];?></td>
                         </tr>
                     </table>
+                    <h2> お支払い金額: <?php echo $amount ?> 円 ( 税込 ) <?php if($coupon_code) { echo '<span style="color:red; font-size:16px;"> クーポン適用後 </span>';} ?> </h2>
+                </div>
+                <div class="col-md-6">
                     <h2> ご利用日当日の流れ </h2>
-                    <span style="color: #990000; font-size: 16px; background-color:#ffd1d1; padding:5px;">このページは、一度閉じたら再度アクセスすることはできません。同じ内容を確認するには、ご予約確定後に送信されるメールを確認するか、印刷ボタンからこのぺーじを印刷してください。</span>
                     <ol style="line-height:2;margin-top:10px;">
                         <li>ご利用日当日は、上記の受付場所までお越しください。</li>
                         <li>ご利用開始前に、受付場所にてスタッフとご利用規約の確認をいたします。<br/> *お手続き時に、身分証明書とクレジットカードのご提示をお願いいたします。</li>
@@ -67,12 +99,13 @@
                         <li>ご利用終了時間になりましたら、スタッフがスペース内を確認いたします。スペース内の原状回復がとれましたら、ご利用終了です。</li>
                     </ol>
                 </div>
-                <div class="col-md-6"> 
+            </div>
+            <div class="col-xs-12" style="margin-bottom:50px;"> 
                     <div id="map"></div> 
                 </div>
-            </div>
-            <div class="text-center">
-                <button class="btn btn-lg btn-submit" onClick="window.print()">このページを印刷する</button>
+            <div class="text-center" style="margin-top:20px;">
+                <span style="color: #990000; font-size: 16px; background-color:#ffd1d1; padding:5px;">このページは、一度閉じたら再度アクセスすることはできません。同じ内容を確認するには、ご予約確定後に送信されるメールを確認するか、印刷ボタンからこのぺーじを印刷してください。</span> </br>            
+                <button class="btn btn-lg btn-submit" onClick="window.print()" style="margin:30px;">このページを印刷する</button>
             </div>
         </div>
     </section>
@@ -124,8 +157,7 @@
 
             var latlng = new google.maps.LatLng(userLng1, userLat1);
             var mapOptions = {
-                zoom: 11,
-                maxZoom: 15,
+                zoom: 14,
                 minZoom: 3,
                 center: latlng,
                 navigationControlOptions: {

@@ -2,7 +2,9 @@
 session_start();
 require_once "config.php";
 
-$data = key($_GET);
+$data = explode('?', key($_GET));
+$unique_link = $data[0].'?'.$data[1];
+$_SESSION['unique_link'] = $unique_link;
 $name = '';
 $date_time = '';
 $plan = '';
@@ -11,10 +13,16 @@ $purpose = '';
 $optional_plan = '';
 $coupon_code = '';
 $amount = '';
-$query = "select * from events WHERE unique_link = '$data'";
+$query = "select * from events WHERE unique_link = '$unique_link'";
 mysqli_set_charset($db, "utf8");
 $final = mysqli_query($db, $query);
 $allData = mysqli_fetch_all($final);
+$payment = $allData['payment'];
+if ((strtotime($data[1]) < strtotime(date('Y-m-d'))) || $payment == 1)
+{
+    echo 'link expired, please register again !';
+    die;
+}
 if (!empty($allData))
 {
     $name = $allData[0][1];
